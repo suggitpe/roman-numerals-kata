@@ -11,8 +11,8 @@ class RomanNumeralsSpecification extends Specification{
     @Unroll
     def "The arabic conversion of #roman is #arabic"(){
         expect:
-            anArabicValueOf(arabic) == aRomanNumberOf(roman).convertToArabic()
-        where:
+            aRomanNumberOf(roman).convertToArabic() == anArabicValueOf(arabic)
+                    where:
             roman   | arabic
             "I"     | 1
             "VI"    | 6
