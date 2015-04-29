@@ -1,5 +1,6 @@
 package org.suggs.katas.romannumerals;
 
+import static org.suggs.katas.romannumerals.ArabicNumber.anArabicValueOf;
 import static org.suggs.katas.romannumerals.RomanNumeral.convertRomanToANegativeArabic;
 import static org.suggs.katas.romannumerals.RomanNumeral.convertRomanToArabic;
 
@@ -16,7 +17,7 @@ public class RomanNumber {
     }
 
     public ArabicNumber convertToArabic() {
-        ArabicNumber accumulatedValue = ArabicNumber.anArabicValueOf(0);
+        ArabicNumber accumulatedValue = anArabicValueOf(0);
         for (int i = 0; i < romanNumerals.length; ++i) {
             accumulatedValue = accumulatedValue.include(calculateArabicValueOfNumeralAt(i));
         }
@@ -25,30 +26,35 @@ public class RomanNumber {
 
     private ArabicNumber calculateArabicValueOfNumeralAt(int locationInListOfNumerals) {
         if (theNextNumeralIsLargerThan(locationInListOfNumerals)) {
-            return convertRomanToANegativeArabic(romanNumerals[locationInListOfNumerals]);
+            return theNegativeValueOfTheNumeralAt(locationInListOfNumerals);
         }
-        return convertRomanToArabic(romanNumerals[locationInListOfNumerals]);
+        return thePositiveValueOfTheNumeralAt(locationInListOfNumerals);
     }
 
     private boolean theNextNumeralIsLargerThan(int locationInListOfNumerals) {
-        if (thereAreMoreElementsInTheListAfter(locationInListOfNumerals)) {
-            return aLargerNumberIsFoundAfter(locationInListOfNumerals);
-        }
-        return false;
+        return thereAreMoreElementsInTheListAfter(locationInListOfNumerals) &&
+                aLargerNumberIsFoundAfter(locationInListOfNumerals);
     }
 
     private boolean thereAreMoreElementsInTheListAfter(int locationInListOfNumerals) {
-        if (locationInListOfNumerals + 1 < romanNumerals.length) {
-            return true;
-        }
-        return false;
+        return locationInListOfNumerals + 1 < romanNumerals.length;
     }
 
     private boolean aLargerNumberIsFoundAfter(int locationInListOfNumerals) {
-        if (convertRomanToArabic(romanNumerals[locationInListOfNumerals + 1]).isALargerValueThan(convertRomanToArabic(romanNumerals[locationInListOfNumerals]))) {
-            return true;
-        }
-        return false;
+        return theValueOfTheNextNumeralFrom(locationInListOfNumerals)
+                .isALargerValueThan(thePositiveValueOfTheNumeralAt(locationInListOfNumerals));
+    }
+
+    private ArabicNumber thePositiveValueOfTheNumeralAt(int currentNumeral) {
+        return convertRomanToArabic(romanNumerals[currentNumeral]);
+    }
+
+    private ArabicNumber theNegativeValueOfTheNumeralAt(int currentNumeral) {
+        return convertRomanToANegativeArabic(romanNumerals[currentNumeral]);
+    }
+
+    private ArabicNumber theValueOfTheNextNumeralFrom(int currentNumeral) {
+        return thePositiveValueOfTheNumeralAt(currentNumeral + 1);
     }
 
 }
